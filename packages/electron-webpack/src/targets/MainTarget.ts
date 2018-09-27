@@ -33,12 +33,14 @@ export class MainTarget extends BaseTarget {
       }))
 
       // do not add for main dev (to avoid adding to hot update chunks), our main-hmr install it
-      configurator.plugins.push(new BannerPlugin({
-        banner: 'require("source-map-support/source-map-support.js").install();',
-        test: /\.js$/,
-        raw: true,
-        entryOnly: true,
-      }))
+      if (configurator.sourceMap) {
+        configurator.plugins.push(new BannerPlugin({
+          banner: 'require("source-map-support/source-map-support.js").install();',
+          test: /\.js$/,
+          raw: true,
+          entryOnly: true,
+        }))
+      }
       return
     }
 

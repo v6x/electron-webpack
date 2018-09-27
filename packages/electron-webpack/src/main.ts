@@ -55,6 +55,7 @@ export class WebpackConfigurator {
 
   readonly isRenderer: boolean
   readonly isProduction: boolean
+  readonly sourceMap: boolean
   readonly isTest = this.type === "test"
 
   readonly sourceDir: string
@@ -102,6 +103,7 @@ export class WebpackConfigurator {
     process.env.BABEL_ENV = type
 
     this.isProduction = this.env.production == null ? process.env.NODE_ENV === "production" : this.env.production
+    this.sourceMap = process.env.NODE_ENV === "development" || process.env.SOURCE_MAP === "1";
 
     this.debug(`isProduction: ${this.isProduction}`)
 
@@ -275,7 +277,9 @@ export class WebpackConfigurator {
     if (this.type === "main") {
       externals.push("webpack/hot/log-apply-result")
       externals.push("electron-webpack/out/electron-main-hmr/HmrClient")
-      externals.push("source-map-support/source-map-support.js")
+      if (this.sourceMap) {
+        externals.push("source-map-support/source-map-support.js")
+      }
     }
 
     if (this.electronWebpackConfiguration.externals != null) {
